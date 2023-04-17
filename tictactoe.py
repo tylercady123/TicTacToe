@@ -121,38 +121,19 @@ def checkTie(board):
     return False
 
 def isWinnable(player, board):
-    # Check if the player can win
+    # Check all rows collumns and diagonals for a winnable set of moves (no blocking moves)
     size = len(board)
-    empty_spaces_exist = False
     # Check rows and columns
     for i in range(size):
-        if board[i].count(player) == size-1:
-            empty_spaces = [j for j in range(size) if board[i][j] == "_"]
-            for j in empty_spaces:
-                if [board[i][k] for k in range(size) if k != j].count("XO".replace(player, "")) == 0:
-                    return True
-            empty_spaces_exist = True
-        if [board[j][i] for j in range(size)].count(player) == size-1:
-            empty_spaces = [j for j in range(size) if board[j][i] == "_"]
-            for j in empty_spaces:
-                if [board[k][i] for k in range(size) if k != j].count("XO".replace(player, "")) == 0:
-                    return True
-            empty_spaces_exist = True
+        if all([board[i][j] == player or board[i][j] == "_" for j in range(size)]) or \
+           all([board[j][i] == player or board[j][i] == "_" for j in range(size)]):
+            return True
     # Check diagonals
-    if [board[i][i] for i in range(size)].count(player) == size-1:
-        empty_spaces = [i for i in range(size) if board[i][i] == "_"]
-        for i in empty_spaces:
-            if [board[j][j] for j in range(size) if j != i].count("XO".replace(player, "")) == 0:
-                return True
-        empty_spaces_exist = True
-    if [board[i][size-i-1] for i in range(size)].count(player) == size-1:
-        empty_spaces = [i for i in range(size) if board[i][size-i-1] == "_"]
-        for i in empty_spaces:
-            if [board[j][size-j-1] for j in range(size) if j != i].count("XO".replace(player, "")) == 0:
-                return True
-        empty_spaces_exist = True
-    return empty_spaces_exist
-    
+    if all([board[i][i] == player or board[i][i] == "_" for i in range(size)]) or \
+         all([board[i][size-i-1] == player or board[i][size-i-1] == "_" for i in range(size)]):
+          return True
+    return False
+
 def checkGameOver(board):
     if checkWin("X", board) or checkWin("O", board) or checkTie(board):
         return True
